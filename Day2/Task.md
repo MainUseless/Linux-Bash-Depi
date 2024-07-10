@@ -20,36 +20,35 @@
 5. Save the output of the last command sorted by their full names in a file.
 6. Write two commands:
    first: to search for all files on the system that named .bash_profile.
-   Second: sorts the output of ls command on / recursively, Saving
-7. their output and error in 2 different files and sending them to the background.
-8. Display the number of users who is logged now to the system.
-9. Display lines 7 to line 10 of /etc/passwd file
+   Second: sorts the output of ls command on / recursively, Saving their output and error in 2 different files and sending them to the background.
+7. Display the number of users who is logged now to the system.
+8. Display lines 7 to line 10 of /etc/passwd file
 
    ```
    head -n 10 /etc/passwd | tail -n 4
    ```
-10. What happens if you execute:
-    cat filename1 | cat filename2
-    ls | rm
-    ls /etc/passwd | wc –l
-11. Issue the command sleep 100.
+9. What happens if you execute:
+   cat filename1 | cat filename2
+   ls | rm
+   ls /etc/passwd | wc –l
+10. Issue the command sleep 100.
 
     ```
     sleep 100
     ```
-12. Stop the last command.
+11. Stop the last command.
 
     ```
     ctrl + z
     [3]+  Stopped                 sleep 100
     ```
-13. Resume the last command in the background
+12. Resume the last command in the background
 
     ```
     bg %3
     [3]+ sleep 100 &
     ```
-14. Issue the jobs command and see its output.
+13. Issue the jobs command and see its output.
 
     ```
     jobs
@@ -57,7 +56,7 @@
     [2]+  Stopped                 sleep 100
     [3]   Running                 sleep 100
     ```
-15. Send the sleep command to the foreground and send it again to the background.
+14. Send the sleep command to the foreground and send it again to the background.
 
     ```
     fg %3
@@ -67,7 +66,7 @@
     bg %1
     [3]+ sleep 100 &
     ```
-16. Kill the sleep command.
+15. Kill the sleep command.
 
     ```
     ps
@@ -78,7 +77,7 @@
     kill 1898
     [1]+  Terminated              sleep 100
     ```
-17. Display your processes only
+16. Display your processes only
 
     ```
     ps -u test1234
@@ -86,7 +85,7 @@
        1833 pts/1    00:00:00 bash
        1904 pts/1    00:00:00 ps
     ```
-18. Display all processes except yours
+17. Display all processes except yours
 
     ```
     ps -du test1234
@@ -98,14 +97,37 @@
           6 ?        00:00:00 kworker/R-slub_
     ....
     ```
-19. Use the pgrep command to list your processes only
-20. Kill your processes only.
-21. Compress a file by compress, gzip, zip commands and decompress it again. State the
-22. differences between compress and gzip commands.
-23. What is the command used to view the content of a compressed file.
-24. Backup /etc directory using tar utility.
-25. Starting from your home directory, find all files that were modified in the last two day.
-26. Starting from /etc, find files owned by root user.
+18. Use the pgrep command to list your processes only
+
+    ```
+    pgrep -u $(whoami)
+    1314
+    1324
+    1373
+    1376
+    1379
+    1381
+    ....
+    ```
+19. Kill your processes only.
+
+    ```
+    pkill -u $(whoami)
+    ```
+20. Compress a file by compress, gzip, zip commands and decompress it again. State the differences between compress and gzip commands.
+21. What is the command used to view the content of a compressed file.
+22. Backup /etc directory using tar utility.
+23. Starting from your home directory, find all files that were modified in the last two day.
+
+    ```
+    find ~ -mtime -2
+    /home/mostafahesham
+    /home/mostafahesham/.cache
+    /home/mostafahesham/.cache/fontconfig
+    /home/mostafahesham/.cache/fontconfig/d589a48862398ed80a3d6066f4f56f4c-le64.cache-9
+    ....
+    ```
+24. Starting from /etc, find files owned by root user.
 
     ```
     sudo find /etc -user root
@@ -118,23 +140,89 @@
     /etc/ImageMagick-7/mime.xml
     ....
     ```
-27. Find all directories in your home directory.
+25. Find all directories in your home directory.
 
     ```
     ls -d ~/*/
     /home/liveuser/Desktop/    /home/liveuser/Downloads/  /home/liveuser/Pictures/  /home/liveuser/Templates/
     /home/liveuser/Documents/  /home/liveuser/Music/      /home/liveuser/Public/    /home/liveuser/Videos/
     ```
-28. Write a command to search for all files on the system that, its name is “.profile”.
+26. Write a command to search for all files on the system that, its name is “.profile”.
 
     ```
-    find / -type f -name ".profile"
+    find / -type f -name ".profile" 2>/dev/null
+    /etc/skel/.profile
+    /home/depi/.profile
+    /home/mostafahesham/.profile
     ```
-29. Identify the file types of the following: /etc/passwd, /dev/pts/0, /etc, /dev/sda
-30. List the inode numbers of /, /etc, /etc/hosts.
-31. Copy /etc/passwd to your home directory, use the commands diff and cmp,
-    and Edit in the
-    file you copied,
+27. Identify the file types of the following: /etc/passwd, /dev/pts/0, /etc, /dev/sda
+
+    ```
+    sudo file /etc
+    [sudo] password for mostafahesham:   
+    /etc: directory
+
+    sudo file /dev/pts/0
+    /dev/pts/0: character special (136/0)
+
+    sudo file /etc/passwd
+    /etc/passwd: ASCII text
+
+    sudo file /dev/sda
+    /dev/sda: block special (8/0)
+    ```
+28. List the inode numbers of /, /etc, /etc/hosts.
+
+    ```
+    ls -id /
+    2 /
+
+    ls -id /etc
+    1835009 /etc
+
+    ls -id /etc/hosts
+    1836365 /etc/hosts
+    ```
+29. Copy /etc/passwd to your home directory, use the commands diff and cmp, and Edit in the file you copied,
     and then use these commands again, and check the output.
-32. Create a symbolic link of /etc/passwd in /boot.
-33. Create a hard link of /etc/passwd in /boot. Could you? Why?
+
+    ```
+    cp /etc/passwd ./temp/passwd
+
+    diff ./passwd /etc/passwd
+
+    cmp ./passwd /etc/passwd
+
+    #changing the file
+
+    diff ./passwd /etc/passwd
+    1c1
+    < root:x:0:0:root:/root:/bin/bash111
+    ---
+    > root:x:0:0:root:/root:/bin/bash
+
+    cmp ./passwd /etc/passwd
+    ./passwd /etc/passwd differ: byte 32, line 1
+
+    ```
+30. Create a symbolic link of /etc/passwd in /boot.
+
+    ```
+    mostafahesham@OG:~/temp$ ln -s /etc/passwd /boot
+    ln: failed to create symbolic link '/boot/passwd': Permission denied
+    mostafahesham@OG:~/temp$ sudo !!
+    sudo ln -s /etc/passwd /boot
+    [sudo] password for mostafahesham:   
+    mostafahesham@OG:~/temp$ ls -al /boot/passwd 
+    lrwxrwxrwx 1 root root 11 Jul 10 20:31 /boot/passwd -> /etc/passwd
+    ```
+31. Create a hard link of /etc/passwd in /boot. Could you? Why?
+
+    ```
+    ln  /etc/passwd /boot
+    ln: failed to create hard link '/boot/passwd' => '/etc/passwd': Operation not permitted
+    mostafahesham@OG:~/temp$ sudo !!
+    sudo ln  /etc/passwd /boot
+    mostafahesham@OG:~/temp$ ls -al /boot/passwd 
+    -rw-r--r-- 2 root root 2834 Jul 10 20:36 /boot/passwd
+    ```
