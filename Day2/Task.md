@@ -17,20 +17,74 @@
    git:x:971:971:git daemon user:/:/usr/bin/git-shell
    ```
 4. Get the logins name and full names (comment) of logins starts with “g”.
+
+   ```
+   [liveuser@eos-2024.04.20 ~]$ getent passwd | grep '^g' | awk -F: '{print $1, $5}'
+   geoclue Geoinformation service
+   git git daemon user
+   ```
 5. Save the output of the last command sorted by their full names in a file.
+
+   ```
+   [liveuser@eos-2024.04.20 ~]$ getent passwd | grep '^g' | awk -F: '{print $1, $5}' | sort -k2 > sorted
+   [liveuser@eos-2024.04.20 ~]$ cat sorted
+   geoclue Geoinformation service
+   git git daemon user
+   ```
 6. Write two commands:
    first: to search for all files on the system that named .bash_profile.
    Second: sorts the output of ls command on / recursively, Saving their output and error in 2 different files and sending them to the background.
+
+   ```
+   [liveuser@eos-2024.04.20 ~]$ find / -name ".bash_profile" 2> /dev/null
+   /etc/skel/.bash_profile
+   /home/liveuser/.bash_profile
+   /run/archiso/airootfs/etc/skel/.bash_profile
+   /run/archiso/airootfs/home/liveuser/.bash_profile
+
+   [liveuser@eos-2024.04.20 ~]$ ls / -R 2> ~/error 1> ~/output &
+   [liveuser@eos-2024.04.20 ~]$ cat ~/error | head -n 5
+   ls: cannot open directory '/etc/audit/plugins.d': Permission denied
+   ls: cannot open directory '/etc/credstore': Permission denied
+   ls: cannot open directory '/etc/credstore.encrypted': Permission denied
+   ls: cannot open directory '/etc/NetworkManager/system-connections': Permission denied
+   ls: cannot open directory '/etc/openvpn/client': Permission denied
+   [liveuser@eos-2024.04.20 ~]$ ls / -R 2> ~/error 1> ~/output 
+   [liveuser@eos-2024.04.20 ~]$ cat ~/output | head -n 5
+   /:
+   bin
+   boot
+   dev
+   etc
+   ```
 7. Display the number of users who is logged now to the system.
+
+   ```
+   [liveuser@eos-2024.04.20 ~]$ who | wc -l
+   2
+   ```
 8. Display lines 7 to line 10 of /etc/passwd file
 
    ```
    head -n 10 /etc/passwd | tail -n 4
    ```
 9. What happens if you execute:
-   cat filename1 | cat filename2
-   ls | rm
-   ls /etc/passwd | wc –l
+   a. cat filename1 | cat filename2
+   b. ls | rm
+   c. ls /etc/passwd | wc –l
+
+   ```
+   [liveuser@eos-2024.04.20 temp]$ echo "testing2" > test2
+   [liveuser@eos-2024.04.20 temp]$ echo "testing" > test
+   [liveuser@eos-2024.04.20 temp]$ cat test | cat test2
+   testing2 # prints the content of the second file only
+
+   [liveuser@eos-2024.04.20 temp]$ ls | rm
+   rm: missing operand
+
+   [liveuser@eos-2024.04.20 temp]$ ls /etc/passwd | wc -l
+   1 # always 1 because passwd is a file
+   ```
 10. Issue the command sleep 100.
 
     ```
@@ -115,8 +169,59 @@
     pkill -u $(whoami)
     ```
 20. Compress a file by compress, gzip, zip commands and decompress it again. State the differences between compress and gzip commands.
+
+    ```
+    Compress with compress:
+    	compress filename
+    	This creates a file named filename.Z.
+
+    Compress with gzip:
+    	gzip filename
+    	This creates a file named filename.gz.
+
+    Compress with zip:
+    	zip filename.zip filename
+    	This creates a file named filename.zip.
+
+    Decompress with uncompress (for .Z files):
+    	uncompress filename.Z
+
+    Decompress with gunzip (for .gz files):
+    	gunzip filename.gz
+
+    Decompress with unzip (for .zip files):
+    	unzip filename.zip
+
+    Differences Between compress and gzip
+    	Compression Algorithm:
+    		compress: Uses the LZW (Lempel-Ziv-Welch) algorithm.
+    		gzip: Uses the DEFLATE algorithm, which is a combination of LZ77 and Huffman coding.
+
+    	Compression Ratio:
+    		compress: Generally achieves a lower compression ratio compared to gzip.
+    		gzip: Typically achieves a higher compression ratio, making the compressed files smaller than those produced by compress.
+
+    	File Extensions:
+    		compress: Produces files with a .Z extension.
+    		gzip: Produces files with a .gz extension.
+
+    	Performance:
+    		compress: Generally faster but results in larger files.
+    		gzip: Generally slower but results in smaller files due to better compression.
+    	Usage:
+    		compress: An older utility, less commonly used today.
+    		gzip: More widely used and supported across various platforms and tools.
+    ```
 21. What is the command used to view the content of a compressed file.
+
+    ```
+    tar -tf "compressed file name"
+    ```
 22. Backup /etc directory using tar utility.
+
+    ```
+    [liveuser@eos-2024.04.20 ~]$ sudo tar -cf "etc" /etc
+    ```
 23. Starting from your home directory, find all files that were modified in the last two day.
 
     ```
