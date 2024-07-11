@@ -76,12 +76,14 @@ LABS3:
    ```
    #!/bin/bash
    echo -n "Enter a char:" 
-   read chara
-   case "${chara:0:1}" in
-       [A-Z] ) echo "Uppercase letter";;
-       [a-z] ) echo "Lowercase letter";;
-       [0-9] ) echo "Number";;
-       * ) echo "Nothing";;
+   read -n 1 chara
+   echo ""
+   case $chara in
+     ([[:upper:]])  echo "Upper Case" ;;
+     ([[:lower:]])  echo "Lower Case" ;;
+     ([[:digit:]])  echo "Number" ;;
+     ("")           echo "Nothing entered" ;;
+     (*)            echo "Special character or something else" ;;
    esac
    ```
 2. Enhanced the previous script, by checking the type of string entered by a user:
@@ -90,6 +92,42 @@ LABS3:
    c. Numbers.
    d. Mix.
    e. Nothing.
+
+   ```
+   #!/bin/bash
+   echo -n "Enter a char:" 
+   read -r chara
+
+   case "$chara" in
+     "" )
+       echo "Nothing entered"
+       ;;
+     *[![:alnum:]]* )
+       echo "Special character or something else"
+       ;;
+     *[[:upper:]]* )
+       if [[ "$chara" =~ ^[[:upper:]]+$ ]]; then
+         echo "Upper Case"
+       else
+         echo "Mixed"
+       fi
+       ;;
+     *[[:lower:]]* )
+       if [[ "$chara" =~ ^[[:lower:]]+$ ]]; then
+         echo "Lower Case"
+       else
+         echo "Mixed"
+       fi
+       ;;
+     *[[:digit:]]* )
+       if [[ "$chara" =~ ^[[:digit:]]+$ ]]; then
+         echo "Number"
+       else
+         echo "Mixed"
+       fi
+       ;;
+   esac
+   ```
 3. Write a script called mychmod using for utility to give execute permission to all files and directories in your home directory.
 
    ```
@@ -105,13 +143,38 @@ LABS3:
 4. Write a script called mybackup using for utility to create a backup of only files in your home directory.
 
    ```
+   #!/bin/bash
 
+   BACKUP_FILE="backup_$(date +%Y%m%d).tar.gz"
+   file_list=()
+
+   for file in ~/*; do
+       if [ -f "$file" ]; then
+           file_list+=("$file")
+       fi
+   done
+
+   if [ ${#file_list[@]} -eq 0 ]; then
+       echo "No files to backup."
+   else
+       tar -czf ~/"$BACKUP_FILE" "${file_list[@]}"
+       echo "Backup created successfully: $BACKUP_FILE"
+   fi
    ```
 5. Write a script called mymail using for utility to send a mail to all users in the system.
    Note: write the mail body in a file called mtemplate.
 
    ```
+   #!/bin/bash
+   users=$(awk -F: '{print $1}' /etc/passwd)
 
+   echo "Users on the system:"
+   echo "$users"
+
+   for user in $users; do
+       echo "Sending mail to $user"
+       mail -s "Hello $user from $USER" $user < /dev/null
+   done
    ```
 6. Write a script called chkmail to check for new mails every 10 seconds. Note: mails are saved in /var/mail/username.
 
